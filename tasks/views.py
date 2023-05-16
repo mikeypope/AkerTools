@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseNotFound, HttpResponseForbidden
 from .models import Task
 from django.contrib.auth.decorators import login_required
 from .forms import TaskUpdateForm, TaskCreateForm
@@ -7,7 +7,9 @@ from django.contrib import messages
 
 @login_required
 def home(request):
-    if request.method == 'POST':
+    if not request.user.has_perm('tasks.delete_task') :
+        return redirect('mytasks')
+    if request.method == 'POST' :
         form = TaskCreateForm(request.POST)
         if form.is_valid():
             logged_in_user = request.user
@@ -57,5 +59,39 @@ def edit_task(request, task_id):
     return render(request, 'tasks/edit_task.html', context)
 
 
+@login_required
+def delete_task(request, task_id):
+    task = Task.objects.filter(id=task_id).first()
 
+    if not task:
+        # Task not found
+        return HttpResponseNotFound()
+
+    # Check if the logged-in user has permission to delete the task
+    if not request.user.has_perm('tasks.delete_task') :
+        return HttpResponseForbidden()
+    if request.user.has_perm('tasks.delete_task') :
+        task.delete()
+        messages.success(request, 'Task deleted successfully.')
+        return redirect('mytasks')
+
+    return render(request, 'tasks/mytasks.html')
+
+@login_required
+def delete_task_fromall(request, task_id):
+    task = Task.objects.filter(id=task_id).first()
+
+    if not task:
+        # Task not found
+        return HttpResponseNotFound()
+
+    # Check if the logged-in user has permission to delete the task
+    if not request.user.has_perm('tasks.delete_task') :
+        return HttpResponseForbidden()
+    if request.user.has_perm('tasks.delete_task') :
+        task.delete()
+        messages.success(request, 'Task deleted successfully.')
+        return redirect('task-home')
+
+    return render(request, 'tasks/home.html')
 

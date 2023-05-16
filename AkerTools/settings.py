@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'tasks.apps.TasksConfig',
     'users.apps.UsersConfig',
+    'timesheet.apps.TimeSheetConfig',
     'crispy_forms',
     'crispy_bootstrap5',
     'django.contrib.admin',
