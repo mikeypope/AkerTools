@@ -1,0 +1,27 @@
+{% extends "tasks/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="container">
+        <h1>Edit Task</h1>
+        <form method="POST" action="">
+            {% csrf_token %}
+            <table class="table">
+                {% for field in form %}
+                    <tr>
+                        <th>{{ field.label_tag }}</th>
+                        <td>
+                            {% if field.field.widget.input_type == 'date' %}
+                                <input class="form-control" type="date" name="{{ field.name }}" id="{{ field.id_for_label }}"
+                                       value="{{ field.value }}" {% if field.field.required %}required{% endif %}>
+                            {% else %}
+                                {{ field }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </div>
+{% endblock content %}

@@ -1,0 +1,40 @@
+{% extends "tasks/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+        <table class="table mt-4">
+            <thead>
+                <tr>
+                    
+                    
+                    <th>Status</th>
+                    <th>Description</th>
+                    <th>Kind</th>
+                    <th>Client</th>
+                    <th>Due Date</th>
+                    <th>Created By</th>
+                    <th>Actions</th>  <!-- Add Actions column -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for task in tasks %}
+                    <tr>
+                        
+                        <td>{{ task.task_status }}</td>
+                        <td>{{ task.task_description }}</td>
+                        <td>{{ task.task_name }}</td>
+                        <td>{{ task.for_client }}</td>
+                        <td>{{ task.due_date|date:"l F d" }}</td>
+                        <td>{{ task.created_by }}</td>
+                        <td>
+                            <a href="{% url 'edit_task' task.id %}" class="btn btn-primary">Edit</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="7">No tasks found.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock content %}

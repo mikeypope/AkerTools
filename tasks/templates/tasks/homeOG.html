@@ -1,0 +1,45 @@
+{% extends "tasks/base.html" %}
+{% block content %}
+    <div class="container">
+        <h1>Task List</h1>
+        <form method="GET" action="">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="taskNameInput" class="form-label"></label>
+                <input type="text" name="task_name" id="taskNameInput" class="form-control" placeholder="Add new task" required>
+            </div>
+            <!-- Add more input fields for other attributes if needed -->
+            <button type="submit" class="btn btn-primary">Add Task</button>
+        </form>
+        <table class="table mt-4">
+            <thead>
+                <tr>
+                    <th>Created By</th>
+                    <th>Assigned To</th>
+                    <th>Task Status</th>
+                    <th>Task Name</th>
+                    <th>Task Description</th>
+                    <th>For Client</th>
+                    <th>Due Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for task in tasks %}
+                    <tr>
+                        <td>{{ task.created_by }}</td>
+                        <td>{{ task.assigned_to }}</td>
+                        <td>{{ task.task_status }}</td>
+                        <td>{{ task.task_name }}</td>
+                        <td>{{ task.task_description }}</td>
+                        <td>{{ task.for_client }}</td>
+                        <td>{{ task.due_date|date:"l F d" }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6">No tasks found.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endblock content %}
