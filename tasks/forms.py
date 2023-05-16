@@ -19,6 +19,6 @@ class TaskCreateForm(forms.ModelForm):
         model = Task
         fields = ['task_description']
         labels = {
-            'task_description': 'Description'
+            'task_description': 'Enter task description'
         }
 

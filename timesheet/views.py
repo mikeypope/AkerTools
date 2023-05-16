@@ -21,12 +21,12 @@ def take_task(request, task_id):
     time_entry.save()
 
     # Redirect the user to a success page or desired URL
-    return redirect('mytimesheet')
+    return redirect('mytimes')
 
 @login_required
 def mytimes(request):
     logged_in_user = request.user
-    times = TimeEntry.objects.filter(employee=logged_in_user).order_by('date')
+    times = TimeEntry.objects.filter(employee=logged_in_user)
     context = {
         'times': times
     }
@@ -34,8 +34,8 @@ def mytimes(request):
 
 @login_required
 def alltimes(request):
-    if not request.user.has_perm('timeentry.delete_task') :
-        return redirect('mytimesheet')
+    if not request.user.groups.filter(name='Level1').exists():
+        return redirect('mytimes')
     context = {
          'times' : TimeEntry.objects.all().order_by('date')
     }
@@ -43,14 +43,27 @@ def alltimes(request):
 
 @login_required
 def create_entry(request):
-    if request.method == 'POST':
+
+    if not request.user.has_perm('tasks.delete_task') :
+        return redirect('mytasks')
+    if request.method == 'POST' :
         form = TimeEntryForm(request.POST)
         if form.is_valid():
-            form.save()
-            # Redirect to success page or desired URL
+            employee = request.user
+            time = form.save(commit=False)
+            time.client = form.cleaned_data.get('client')
+            time.hours = form.cleaned_data.get('hours')
+            time.job_type = form.cleaned_data.get('job_type')
+            time.save()
+            return redirect('mytasks')
     else:
         form = TimeEntryForm()
-    return render(request, 'timesheet/create_entry.html', {'form': form})
+    context = {
+        'form': form,
+    }
+    return render(request, 'timesheet/create_entry.html', context)
+
+
 
 @login_required
 def edit_entry(request, entry_id):
@@ -62,4 +75,4 @@ def edit_entry(request, entry_id):
             # Redirect to success page or desired URL
     else:
         form = TimeEntryEditForm(instance=entry)
-    return render(request, 'edit_entry.html', {'form': form, 'entry': entry})
+    return render(request, 'timesheet/edit_entry.html', {'form': form, 'entry': entry})

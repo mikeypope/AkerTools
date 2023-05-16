@@ -18,31 +18,39 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ml-auto">
-                        {% if user.is_authenticated %}
-                        <li class="nav-item">
+                        {% if user.groups.all %}
+                        <li class="nav-item {% if request.path == '/tasks/' %}active{% endif %}">
                             <a class="nav-link" href="{% url 'task-home' %}">All Tasks</a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item {% if request.path == '/timesheet/' %}active{% endif %}">
+                            <a class="nav-link" href="{% url 'alltimes' %}">Timesheet</a>
+                        </li>
+                        {% else %}
+                        {% endif %}
+                        {% if user.is_authenticated %}
+                        <li class="nav-item {% if request.path == '/mytasks/' %}active{% endif %}">
                             <a class="nav-link" href="{% url 'mytasks' %}">My Tasks</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="">Timesheet</a>
+                        <li class="nav-item {% if request.path == '/mytimes/' %}active{% endif %}">
+                            <a class="nav-link" href="{% url 'mytimes' %}">My Timesheet</a>
                         </li>
                         {% else %}
                         {% endif %}
                         <!-- Add more navigation items as needed -->
-                        <div class="navbar-nav">
-                            {% if user.is_authenticated %}
-                            <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
-                            {% else %}
-                            <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
-                            {% endif %}
-                        </div>
+                        {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                        </li>
+                        {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">Login</a>
+                        </li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>
         </nav>
-
+        
         <!-- Page content -->
         <div class="container mt-4">
             {% if messages %}
