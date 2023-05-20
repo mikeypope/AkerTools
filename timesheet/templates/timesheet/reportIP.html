@@ -1,0 +1,48 @@
+{% extends "tasks/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <h1>Generate Report</h1>
+    <form method="POST" action="{% url 'generate_report' %}">
+        {% csrf_token %}
+        <label for="start_date">Start Date:</label>
+        <input type="date" name="start_date" required>
+        <br>
+        <label for="end_date">End Date:</label>
+        <input type="date" name="end_date" required>
+        <br>
+        <label for="client">Client:</label>
+        <select name="client" required>
+            {% for client in clients %}
+                <option value="{{ client.client_name }}">{{ client.client_name }}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <input type="submit" value="Generate Report">
+    </form>
+
+    {% if bill_amount and breakdown %}
+        <h2>Report Results:</h2>
+        <p>Bill Amount: ${{ bill_amount }}</p>
+
+        {% for client, data in breakdown.items %}
+            <h3>{{ client }}:</h3>
+            <p>Hours Worked: ${{ data.hours_worked }}</p>
+            <h4>Breakdown:</h4>
+            <ul>
+                {% for employee_rank, employee_data in data.breakdown.items %}
+                    <li>{{ employee_rank }}:</li>
+                    <ul>
+                        <li>Hours Worked: {{ employee_data.hours_worked }}</li>
+                        <li>Job Types:</li>
+                        <ul>
+                            {% for job_type in employee_data.job_types %}
+                                <li>{{ job_type }}</li>
+                            {% endfor %}
+                        </ul>
+                    </ul>
+                {% endfor %}
+            </ul>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

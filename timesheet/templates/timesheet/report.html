@@ -1,0 +1,31 @@
+{% extends "tasks/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<body>
+    <h1>Generate Report</h1>
+    <form method="POST" action="{% url 'generate_report' %}">
+        {% csrf_token %}
+        {{ form }}
+        
+        <input type="submit" value="Generate Report">
+    </form>
+
+    {% if bill_amount and breakdown %}
+        <h2>Report Results:</h2>
+        <p>Bill Amount: ${{ bill_amount }}</p>
+        <h2>Breakdown:</h2>
+        {% for key, value in breakdown.items %}
+            <h4>{{ key }}:</h4>
+            <ul>
+                <li>Hours Worked: {{ value.hours_worked }}</li>
+                <ul>
+                    {% for job_type, job_hours in value.job_types.items %}
+                        <li>{{ job_type }}: {{ job_hours }}</li>
+                    {% endfor %}
+                </ul>
+            </ul>
+        {% endfor %}
+    {% endif %}
+</body>
+{% endblock %}

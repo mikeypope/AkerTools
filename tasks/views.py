@@ -95,3 +95,4 @@ def delete_task_fromall(request, task_id):
 
     return render(request, 'tasks/home.html')
 
+

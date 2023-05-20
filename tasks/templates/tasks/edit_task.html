@@ -12,8 +12,9 @@
                         <th>{{ field.label_tag }}</th>
                         <td>
                             {% if field.field.widget.input_type == 'date' %}
-                                <input class="form-control" type="date" name="{{ field.name }}" id="{{ field.id_for_label }}"
-                                       value="{{ field.value }}" {% if field.field.required %}required{% endif %}>
+                                <input class="form-control form-control-sm" type="date" name="{{ field.name }}" id="{{ field.id_for_label }}"
+                                       value="{{ field.value }}" {% if field.field.required %}required{% endif %}
+                                       style="max-width: 150px;">
                             {% else %}
                                 {{ field }}
                             {% endif %}

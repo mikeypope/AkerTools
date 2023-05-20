@@ -27,7 +27,8 @@ urlpatterns = [
     path('register/', user_views.register, name='register'),
     path('tasks/', include('tasks.urls')),
     path('mytasks/', task_views.mytasks, name='mytasks'),
-    path('edit_task/', task_views.edit_task, name='edit_task'),
+    #path('edit_task/', task_views.edit_task, name='edit_task'),
+    path('send_task/<int:task_id>', time_views.send_task, name='send_task'),
     path('', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
     path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'), name='logout'),
@@ -35,4 +36,7 @@ urlpatterns = [
     path('mytimesheet/', time_views.mytimes, name='mytimes'),    
     path('timesheet/create/', time_views.create_entry, name='create-entry'),
     path('timesheet/edit/<int:entry_id>/', time_views.edit_entry, name='edit-entry'),
+    path('timesheet/delete/<int:entry_id>/', time_views.delete_time, name='delete-entry'),
+    path('timesheet/deletefromall/<int:entry_id>/', time_views.delete_time_fromall, name='delete-entry-fromall'),
+    path('timesheet/report/', time_views.generate_report, name='generate_report'),
 ]

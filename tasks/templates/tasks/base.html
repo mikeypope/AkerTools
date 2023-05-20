@@ -18,12 +18,15 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ml-auto">
-                        {% if user.groups.all %}
+                        {% if user.is_staff %}
                         <li class="nav-item {% if request.path == '/tasks/' %}active{% endif %}">
                             <a class="nav-link" href="{% url 'task-home' %}">All Tasks</a>
                         </li>
                         <li class="nav-item {% if request.path == '/timesheet/' %}active{% endif %}">
-                            <a class="nav-link" href="{% url 'alltimes' %}">Timesheet</a>
+                            <a class="nav-link" href="{% url 'alltimes' %}">All Timesheets</a>
+                        </li>
+                        <li class="nav-item {% if request.path == '/timesheet/report' %}active{% endif %}">
+                            <a class="nav-link" href="{% url 'generate_report' %}">Report</a>
                         </li>
                         {% else %}
                         {% endif %}
