@@ -38,7 +38,8 @@ class Client(models.Model):
 
             breakdown[employee_rank] = {
                 'hours_worked': employee_hours,
-                'job_types': job_types
+                'job_types': job_types,
+                'rate': rate,
             }
 
             bill_amount += employee_hours * Decimal(rate)

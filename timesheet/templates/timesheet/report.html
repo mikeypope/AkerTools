@@ -3,7 +3,7 @@
 
 {% block content %}
 <body>
-    <h1>Generate Report</h1>
+    <h1>Billing Report</h1>
     <form method="POST" action="{% url 'generate_report' %}">
         {% csrf_token %}
         {{ form }}
@@ -12,19 +12,19 @@
     </form>
 
     {% if bill_amount and breakdown %}
-        <h2>Report Results:</h2>
-        <p>Bill Amount: ${{ bill_amount }}</p>
-        <h2>Breakdown:</h2>
+        <h4>--------------------------------------------------------</h4>
+        <h4>For period <b>{{start_date}}</b> to <b>{{end_date}}</b> </h4>
+        Total amount to bill: <b>${{ bill_amount }}</b>
+        <h4>--------------------------------------------------------</h4>
+
         {% for key, value in breakdown.items %}
-            <h4>{{ key }}:</h4>
-            <ul>
-                <li>Hours Worked: {{ value.hours_worked }}</li>
+            <b>{{ key }}s</b> worked <b>{{ value.hours_worked }}</b> hours total at <b>${{value.rate}}</b> per hour
                 <ul>
                     {% for job_type, job_hours in value.job_types.items %}
-                        <li>{{ job_type }}: {{ job_hours }}</li>
+                        {{ job_type }}: {{ job_hours }} hours<br>
                     {% endfor %}
                 </ul>
-            </ul>
+            
         {% endfor %}
     {% endif %}
 </body>

@@ -171,7 +171,12 @@ def generate_report(request):
                 'form': form,
                 'clients': clients,
                 'bill_amount': bill_amount,
-                'breakdown': breakdown
+                'breakdown': breakdown,
+                'start_date': start_date,
+                'end_date': end_date,
+                'lead_designer_rate': client.lead_designer_rate,
+                'associate_designer_rate': client.associate_designer_rate,
+                'admin_rate': client.admin_rate,
             }
             return render(request, 'timesheet/report.html', context)
     else:
@@ -182,3 +187,24 @@ def generate_report(request):
             'clients': clients,
         }
         return render(request, 'timesheet/report.html', context)
+    
+@login_required
+def create_myentry(request):
+
+    if request.method == 'POST':
+        form = TimeEntryForm(request.POST, user=request.user)
+        if form.is_valid():
+            time = form.save(commit=False)
+            time.employee = request.user
+            time.client = form.cleaned_data.get('client')
+            time.hours = form.cleaned_data.get('hours')
+            time.job_type = form.cleaned_data.get('job_type')
+            time.save()
+            return redirect('mytimes')
+    else:
+        form = TimeEntryForm(user=request.user)
+
+    context = {
+        'form': form,
+    }
+    return render(request, 'timesheet/create_entry.html', context)

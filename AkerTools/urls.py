@@ -35,6 +35,7 @@ urlpatterns = [
     path('timesheet/', time_views.alltimes, name='alltimes'), 
     path('mytimesheet/', time_views.mytimes, name='mytimes'),    
     path('timesheet/create/', time_views.create_entry, name='create-entry'),
+    path('timesheet/mycreate/', time_views.create_myentry, name='create-myentry'),
     path('timesheet/edit/<int:entry_id>/', time_views.edit_entry, name='edit-entry'),
     path('timesheet/delete/<int:entry_id>/', time_views.delete_time, name='delete-entry'),
     path('timesheet/deletefromall/<int:entry_id>/', time_views.delete_time_fromall, name='delete-entry-fromall'),
