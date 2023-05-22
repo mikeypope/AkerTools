@@ -2,6 +2,8 @@ from django import forms
 from tasks.models import TimeEntry, Client
 from django.contrib.auth import get_user_model
 from django.utils import timezone
+from django.contrib.auth.models import User
+
 
 
 class TimeEntryForm(forms.ModelForm):
@@ -37,6 +39,49 @@ class GenerateReportForm(forms.Form):
         self.fields['client'].choices = client_choices
         self.set_default_dates()
 
+    def set_default_dates(self):
+        today = timezone.now().date()
+        self.initial['start_date'] = today.replace(day=1)
+        self.initial['end_date'] = today
+
+class TimeEntryFilterForm(forms.Form):
+    start_date = forms.DateField(label='Start Date', widget=forms.DateInput(attrs={'type': 'date'}),required=False)
+    end_date = forms.DateField(label='End Date', widget=forms.DateInput(attrs={'type': 'date'}),required=False)
+    
+    employee = forms.ModelChoiceField(
+        queryset=User.objects.all(),
+        empty_label='All Employees',
+        required=False
+    )
+    client = forms.ModelChoiceField(
+        queryset=Client.objects.all(),
+        empty_label='All Clients',
+        required=False
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(TimeEntryFilterForm, self).__init__(*args, **kwargs)
+        self.set_default_dates()
+        
+
+    def set_default_dates(self):
+        today = timezone.now().date()
+        self.initial['start_date'] = today.replace(day=1)
+        self.initial['end_date'] = today
+        
+class MyTimeEntryFilterForm(forms.Form):
+    start_date = forms.DateField(label='Start Date', widget=forms.DateInput(attrs={'type': 'date'}),required=False)
+    end_date = forms.DateField(label='End Date', widget=forms.DateInput(attrs={'type': 'date'}),required=False)
+    client = forms.ModelChoiceField(
+        queryset=Client.objects.all(),
+        empty_label='All Clients',
+        required=False
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(MyTimeEntryFilterForm, self).__init__(*args, **kwargs)
+        self.set_default_dates()
+        
     def set_default_dates(self):
         today = timezone.now().date()
         self.initial['start_date'] = today.replace(day=1)

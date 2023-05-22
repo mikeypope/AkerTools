@@ -10,7 +10,8 @@ from django import template
 from django.contrib.auth.models import Group
 from datetime import date, timedelta
 from django.template.defaultfilters import date as datefilter
-from .forms import GenerateReportForm
+from .forms import GenerateReportForm, TimeEntryFilterForm, MyTimeEntryFilterForm
+from django.utils import timezone
 
 
 register = template.Library()
@@ -40,39 +41,81 @@ def send_task(request, task_id):
 
 @login_required
 def mytimes(request):
-    logged_in_user = request.user
-    times = TimeEntry.objects.filter(employee=logged_in_user)
+    initial_values = {
+        'start_date': timezone.now().date().replace(day=1),
+        'end_date': timezone.now().date(),
+    }
+    form = MyTimeEntryFilterForm()
+
+    if request.method == 'POST':
+        form = MyTimeEntryFilterForm(request.POST)
+        if form.is_valid():
+            logged_in_user = request.user
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
+            client = form.cleaned_data['client']
+            times = TimeEntry.objects.filter(employee=logged_in_user)
+            if start_date and end_date:
+                times = times.filter(date__range=[start_date, end_date])
+
+            if client:
+                times = times.filter(client=client)
+
+            context = {
+                'form': form,
+                'times': times,
+                'start_date': start_date,
+                'end_date': end_date,
+            }
+            return render(request, 'timesheet/mytimesheet.html', context)
     context = {
-        'times': times
+        'form': form,
     }
     return render(request, 'timesheet/mytimesheet.html', context)
-
-@login_required
-def alltimesbyclient(request):
-    if not request.user.groups.filter(name='LeadDesigner').exists():
-        return redirect('mytimes')
-    context = {
-         'times' : TimeEntry.objects.all().order_by('client','date')
-    }
-    return render(request, 'timesheet/timesheet.html', context)
-
-@login_required
-def alltimesbyemployee(request):
-    if not request.user.groups.filter(name='LeadDesigner').exists():
-        return redirect('mytimes')
-    context = {
-         'times' : TimeEntry.objects.all().order_by('employee','date')
-    }
-    return render(request, 'timesheet/timesheet.html', context)
 
 @login_required
 def alltimes(request):
     if not request.user.groups.filter(name='LeadDesigner').exists():
         return redirect('mytimes')
+    initial_values = {
+        'start_date': timezone.now().date().replace(day=1),
+        'end_date': timezone.now().date(),
+    }
+    form = TimeEntryFilterForm()
+
+    if request.method == 'POST':
+        form = TimeEntryFilterForm(request.POST)
+
+        if form.is_valid():
+            employee = form.cleaned_data['employee']
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
+            client = form.cleaned_data['client']
+
+            time_entries = TimeEntry.objects.all().order_by('date')
+
+            if employee:
+                time_entries = time_entries.filter(employee=employee)
+
+            if start_date and end_date:
+                time_entries = time_entries.filter(date__range=[start_date, end_date])
+
+            if client:
+                time_entries = time_entries.filter(client=client)
+
+            context = {
+                'form': form,
+                'times': time_entries,
+                'start_date': start_date,
+                'end_date': end_date,
+            }
+            return render(request, 'timesheet/timesheet.html', context)
+
     context = {
-         'times' : TimeEntry.objects.all().order_by('date')
+        'form': form,
     }
     return render(request, 'timesheet/timesheet.html', context)
+
 
 @login_required
 def create_entry(request):
@@ -177,6 +220,7 @@ def generate_report(request):
                 'lead_designer_rate': client.lead_designer_rate,
                 'associate_designer_rate': client.associate_designer_rate,
                 'admin_rate': client.admin_rate,
+                'client_name': client.client_name,
             }
             return render(request, 'timesheet/report.html', context)
     else:

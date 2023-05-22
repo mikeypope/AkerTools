@@ -2,6 +2,13 @@
 {% load crispy_forms_tags %}
 {% block content %}
   <h1>Time Entries</h1>
+  
+  <form method="POST" action="{% url 'alltimes' %}">
+    {% csrf_token %}
+    {{ form }}
+
+    <button type="submit">Apply Filters</button>
+  </form>
   <table class="table mt-4">
     <thead>
       <tr>
@@ -30,7 +37,7 @@
         </tr>
       {% empty %}
         <tr>
-          <td colspan="5">No time entries found.</td>
+          <td colspan="5">Apply Filters to see results</td>
         </tr>
       {% endfor %}
     </tbody>

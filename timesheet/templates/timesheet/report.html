@@ -13,8 +13,7 @@
 
     {% if bill_amount and breakdown %}
         <h4>--------------------------------------------------------</h4>
-        <h4>For period <b>{{start_date}}</b> to <b>{{end_date}}</b> </h4>
-        Total amount to bill: <b>${{ bill_amount }}</b>
+        for <b>{{start_date}}</b> to <b>{{end_date}}</b>, the total amount to bill <b>{{ client_name }}</b> is <b>${{ bill_amount }}</b>
         <h4>--------------------------------------------------------</h4>
 
         {% for key, value in breakdown.items %}
