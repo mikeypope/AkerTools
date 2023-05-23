@@ -29,7 +29,7 @@ def home(request):
 @login_required
 def mytasks(request):
     logged_in_user = request.user
-    tasks = Task.objects.filter(assigned_to=logged_in_user).order_by('due_date')
+    tasks = Task.objects.filter(assigned_to=logged_in_user).exclude(task_status='1').order_by('due_date')
     context = {
         'tasks': tasks
     }
