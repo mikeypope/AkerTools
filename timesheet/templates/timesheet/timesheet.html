@@ -9,6 +9,8 @@
 
     <button type="submit">Apply Filters</button>
   </form>
+  <br>
+  <p>Total Hours Worked: {{ total_hours }}</p>
   <table class="table mt-4">
     <thead>
       <tr>
@@ -43,5 +45,4 @@
     </tbody>
   </table>
 
-  <a href="{% url 'create-entry' %}">Add New Entry</a>
 {% endblock %}

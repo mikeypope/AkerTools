@@ -10,21 +10,17 @@ class TimeEntryForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')  # Get the logged-in user from the kwargs
         super().__init__(*args, **kwargs)
-        self.fields['employee'].initial = user  # Set the initial value to the logged-in user
+       
 
-    employee = forms.ModelChoiceField(
-        queryset=get_user_model().objects.all(),
-        empty_label=None,  # Optional: To remove the empty label from the dropdown
-    )
     class Meta:
         model = TimeEntry  # Specify the model class
-        fields = ['employee', 'client', 'hours_worked', 'job_type']
+        fields = [ 'client', 'hours_worked', 'job_type']
 
 
 class TimeEntryEditForm(forms.ModelForm):
     class Meta:
         model = TimeEntry
-        fields = ['employee', 'client', 'date', 'hours_worked', 'job_type']
+        fields = ['client', 'date', 'hours_worked', 'job_type']
         # Add other fields as needed
 
 class GenerateReportForm(forms.Form):
@@ -34,7 +30,7 @@ class GenerateReportForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(GenerateReportForm, self).__init__(*args, **kwargs)
-        clients = Client.objects.all()
+        clients = Client.objects.all().order_by('client_name')
         client_choices = [(client.client_name, client.client_name) for client in clients]
         self.fields['client'].choices = client_choices
         self.set_default_dates()
@@ -49,12 +45,12 @@ class TimeEntryFilterForm(forms.Form):
     end_date = forms.DateField(label='End Date', widget=forms.DateInput(attrs={'type': 'date'}),required=False)
     
     employee = forms.ModelChoiceField(
-        queryset=User.objects.all(),
+        queryset=User.objects.all().order_by('username'),
         empty_label='All Employees',
         required=False
     )
     client = forms.ModelChoiceField(
-        queryset=Client.objects.all(),
+        queryset=Client.objects.all().order_by('client_name'),
         empty_label='All Clients',
         required=False
     )
@@ -73,7 +69,7 @@ class MyTimeEntryFilterForm(forms.Form):
     start_date = forms.DateField(label='Start Date', widget=forms.DateInput(attrs={'type': 'date'}),required=False)
     end_date = forms.DateField(label='End Date', widget=forms.DateInput(attrs={'type': 'date'}),required=False)
     client = forms.ModelChoiceField(
-        queryset=Client.objects.all(),
+        queryset=Client.objects.all().order_by('client_name'),
         empty_label='All Clients',
         required=False
     )

@@ -1,6 +1,7 @@
 {% extends "tasks/base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
+        <h3>My Completed Tasks</h3>
         <table class="table mt-4">
             <thead>
                 <tr>
@@ -37,9 +38,5 @@
                 {% endfor %}
             </tbody>
         </table>
-        <form action="{% url 'mycompletedtasks' %}">
-            <button class="btn btn-link" type="submit">Completed Tasks</button>
-         </form>
     </div>
-    
 {% endblock content %}

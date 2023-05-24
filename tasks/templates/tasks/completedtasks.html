@@ -1,11 +1,18 @@
 {% extends "tasks/base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
+        <div class="container">
+            <div class="container">
+                <!-- Rest of the table code -->
+            </div>
+        </div>
+            
         <table class="table mt-4">
             <thead>
+                
                 <tr>
                     
-                    
+                    <th>Assigned To</th>
                     <th>Status</th>
                     <th>Description</th>
                     <th>Kind</th>
@@ -18,7 +25,7 @@
             <tbody>
                 {% for task in tasks %}
                     <tr>
-                        
+                        <td>{{ task.assigned_to }}</td>
                         <td>{{ task.task_status }}</td>
                         <td>{{ task.task_description }}</td>
                         <td>{{ task.task_kind }}</td>
@@ -26,20 +33,17 @@
                         <td>{{ task.due_date|date:"l F d" }}</td>
                         <td>{{ task.created_by }}</td>
                         <td>
-                            <a href="{% url 'send_task' task.id %}" >Send</a> <br>
                             <a href="{% url 'edit_task' task.id %}" >Edit</a>
+                            <a href="{% url 'delete_task_fromall' task.id %}" >Delete</a>
                         </td>
                     </tr>
                 {% empty %}
                     <tr>
-                        <td colspan="7">You have no tasks assigned.</td>
+                        <td colspan="7">No tasks found.</td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
-        <form action="{% url 'mycompletedtasks' %}">
-            <button class="btn btn-link" type="submit">Completed Tasks</button>
-         </form>
-    </div>
-    
+        </div>
+        
 {% endblock content %}

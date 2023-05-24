@@ -11,6 +11,9 @@
                 
                     <button type="submit" class="btn btn-primary">Add Task</button>
                 </form>
+                <form action="{% url 'completedtasks' %}">
+                    <button class="btn btn-link" type="submit">Completed Tasks</button>
+                 </form>
                 <!-- Rest of the table code -->
             </div>
         </div>

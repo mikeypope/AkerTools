@@ -22,9 +22,29 @@ def home(request):
         form = TaskCreateForm()
     context = {
         'form': form,
-         'tasks' : Task.objects.all()
+         'tasks' : Task.objects.all().exclude(task_status='1').order_by('due_date')
     }
     return render(request, 'tasks/home.html', context)
+
+@login_required
+def completedtasks(request):
+    if not request.user.has_perm('tasks.delete_task') :
+        return redirect('mytasks')
+    if request.method == 'POST' :
+        form = TaskCreateForm(request.POST)
+        if form.is_valid():
+            logged_in_user = request.user
+            task = form.save(commit=False)
+            task.task_description = form.cleaned_data.get('task_description')
+            task.created_by = logged_in_user
+            task.save()
+            return redirect('task-home')
+    else:
+        form = TaskCreateForm()
+    context = {
+         'tasks' : Task.objects.all().filter(task_status='1').order_by('due_date')
+    }
+    return render(request, 'tasks/completedtasks.html', context)
 
 @login_required
 def mytasks(request):
@@ -35,6 +55,41 @@ def mytasks(request):
     }
     return render(request, 'tasks/mytasks.html', context)
 
+
+@login_required
+def mycompletedtasks(request):
+    logged_in_user = request.user
+    tasks = Task.objects.filter(assigned_to=logged_in_user,task_status='1').order_by('due_date')
+    context = {
+        'tasks': tasks
+    }
+    return render(request, 'tasks/mycompletedtasks.html', context)
+
+# @login_required
+# def edit_task(request, task_id):
+#     logged_in_user = request.user
+#     task = Task.objects.filter(id=task_id).first()
+
+#     if not task:
+#         # Task not found or not assigned to the logged-in user
+#         return HttpResponseNotFound()
+
+#     if request.method == 'POST':
+#         form = TaskUpdateForm(request.POST, instance=task)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('mytasks')
+#     else:
+#         form = TaskUpdateForm(instance=task)
+
+#     context = {
+#         'form': form,
+#         'task': task
+#     }
+#     return render(request, 'tasks/edit_task.html', context)
+from django.utils import timezone
+
+
 @login_required
 def edit_task(request, task_id):
     logged_in_user = request.user
@@ -44,20 +99,24 @@ def edit_task(request, task_id):
         # Task not found or not assigned to the logged-in user
         return HttpResponseNotFound()
 
+    initial_values = {}
+
+    if not task.due_date:
+        initial_values['due_date'] = timezone.now().date()
+
     if request.method == 'POST':
         form = TaskUpdateForm(request.POST, instance=task)
         if form.is_valid():
             form.save()
-            return redirect('mytasks')
+            return redirect('task-home')
     else:
-        form = TaskUpdateForm(instance=task)
+        form = TaskUpdateForm(instance=task, initial=initial_values)
 
     context = {
         'form': form,
         'task': task
     }
     return render(request, 'tasks/edit_task.html', context)
-
 
 @login_required
 def delete_task(request, task_id):
