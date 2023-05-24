@@ -21,6 +21,8 @@ class Client(models.Model):
         if start_date and end_date:
             time_entries = time_entries.filter(date__range=[start_date, end_date])
 
+        time_entries = time_entries.filter(job_type__billable=1)
+
         employee_ranks = {
             'LeadDesigner': self.lead_designer_rate,
             'AssociateDesigner': self.associate_designer_rate,

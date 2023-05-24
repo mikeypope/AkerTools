@@ -132,6 +132,7 @@ def mytimes(request):
             start_date = form.cleaned_data['start_date']
             end_date = form.cleaned_data['end_date']
             client = form.cleaned_data['client']
+            job_type = form.cleaned_data['job_type']
             times = TimeEntry.objects.filter(employee=logged_in_user).order_by('-date')
             
             if start_date and end_date:
@@ -139,6 +140,9 @@ def mytimes(request):
 
             if client:
                 times = times.filter(client=client)
+            
+            if job_type:
+                times = times.filter(job_type=job_type)
 
             total_hours = times.aggregate(Sum('hours_worked'))['hours_worked__sum']
             
@@ -232,6 +236,7 @@ def alltimes(request):
             start_date = form.cleaned_data['start_date']
             end_date = form.cleaned_data['end_date']
             client = form.cleaned_data['client']
+            job_type = form.cleaned_data['job_type']
             
             time_entries = TimeEntry.objects.all().order_by('-date')
             
@@ -243,6 +248,10 @@ def alltimes(request):
 
             if client:
                 time_entries = time_entries.filter(client=client)
+
+            if job_type:
+                time_entries = time_entries.filter(job_type=job_type)
+
             total_hours = time_entries.aggregate(Sum('hours_worked'))['hours_worked__sum']
             context = {
                 'form': form,

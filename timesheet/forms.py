@@ -1,5 +1,5 @@
 from django import forms
-from tasks.models import TimeEntry, Client
+from tasks.models import TimeEntry, Client, JobType
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from django.contrib.auth.models import User
@@ -57,6 +57,11 @@ class TimeEntryFilterForm(forms.Form):
         empty_label='All Clients',
         required=False
     )
+    job_type = forms.ModelChoiceField(
+        queryset=JobType.objects.all().order_by('job_type'),
+        empty_label='All Job Types',
+        required=False
+    )
 
     def __init__(self, *args, **kwargs):
         super(TimeEntryFilterForm, self).__init__(*args, **kwargs)
@@ -74,6 +79,11 @@ class MyTimeEntryFilterForm(forms.Form):
     client = forms.ModelChoiceField(
         queryset=Client.objects.all().order_by('client_name'),
         empty_label='All Clients',
+        required=False
+    )
+    job_type = forms.ModelChoiceField(
+        queryset=JobType.objects.all().order_by('job_type'),
+        empty_label='All Job Types',
         required=False
     )
 
