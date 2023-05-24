@@ -234,7 +234,7 @@ def alltimes(request):
             client = form.cleaned_data['client']
             
             time_entries = TimeEntry.objects.all().order_by('-date')
-
+            
             if employee:
                 time_entries = time_entries.filter(employee=employee)
 
@@ -257,6 +257,9 @@ def alltimes(request):
         time_entries = TimeEntry.objects.all().order_by('-date')
         start_date = initial_values['start_date']
         end_date = initial_values['end_date']
+        if start_date and end_date:
+            time_entries = time_entries.filter(date__range=[start_date, end_date])
+
         total_hours = time_entries.aggregate(Sum('hours_worked'))['hours_worked__sum']
 
         context = {
@@ -264,6 +267,7 @@ def alltimes(request):
             'times': time_entries,
             'start_date': start_date,
             'end_date': end_date,
+            'total_hours': total_hours
         }
         return render(request, 'timesheet/timesheet.html', context)
 

@@ -21,6 +21,9 @@ class TimeEntryEditForm(forms.ModelForm):
     class Meta:
         model = TimeEntry
         fields = ['client', 'date', 'hours_worked', 'job_type']
+        widgets = {
+            'date': forms.DateInput(attrs={'type': 'date'}),
+        }
         # Add other fields as needed
 
 class GenerateReportForm(forms.Form):

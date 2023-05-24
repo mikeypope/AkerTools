@@ -26,7 +26,7 @@
                         <td>{{ task.due_date|date:"l F d" }}</td>
                         <td>{{ task.created_by }}</td>
                         <td>
-                            <a href="{% url 'send_task' task.id %}" >Send</a> <br>
+                            <a href="{% url 'send_task' task.id %}" >Send</a> 
                             <a href="{% url 'edit_task' task.id %}" >Edit</a>
                         </td>
                     </tr>

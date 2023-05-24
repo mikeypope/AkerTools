@@ -11,6 +11,7 @@
     <button type="submit">Apply Filters</button>
   </form>
   <a href="{% url 'create-myentry' %}">Add New Entry</a>
+  <p>Total Hours Worked: {{ total_hours }}</p>
   <table class="table mt-4">
     <thead>
       <tr>
@@ -42,5 +43,4 @@
     </tbody>
   </table>
 
-  <p>Total Hours Worked: {{ total_hours }}</p>
 {% endblock %}
