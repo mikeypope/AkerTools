@@ -220,7 +220,8 @@ def mytimes(request):
 #     return render(request, 'timesheet/timesheet.html', context)
 @login_required
 def alltimes(request):
-    if not request.user.groups.filter(name='LeadDesigner').exists():
+    
+    if not (request.user.groups.filter(name='LeadDesigner').exists() or request.user.groups.filter(name='AssociateDesigner').exists()):
         return redirect('mytimes')
     
     initial_values = {
