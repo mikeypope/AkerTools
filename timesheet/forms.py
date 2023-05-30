@@ -7,6 +7,11 @@ from django.contrib.auth.models import User
 
 
 class TimeEntryForm(forms.ModelForm):
+    class Meta:
+        model = TimeEntry  # Specify the model class
+        fields = [ 'employee','client', 'hours_worked', 'job_type']
+
+class MyTimeEntryForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')  # Get the logged-in user from the kwargs
         super().__init__(*args, **kwargs)
@@ -17,7 +22,17 @@ class TimeEntryForm(forms.ModelForm):
         fields = [ 'client', 'hours_worked', 'job_type']
 
 
+
 class TimeEntryEditForm(forms.ModelForm):
+    class Meta:
+        model = TimeEntry
+        fields = ['employee','client', 'date', 'hours_worked', 'job_type']
+        widgets = {
+            'date': forms.DateInput(attrs={'type': 'date'}),
+        }
+        # Add other fields as needed
+
+class MyTimeEntryEditForm(forms.ModelForm):
     class Meta:
         model = TimeEntry
         fields = ['client', 'date', 'hours_worked', 'job_type']

@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import TimeEntryForm, TimeEntryEditForm
+from .forms import TimeEntryForm, TimeEntryEditForm, MyTimeEntryForm, MyTimeEntryEditForm
 from django.db.models import Sum
 from django import template
 from django.contrib.auth.models import Group
@@ -221,7 +221,7 @@ def mytimes(request):
 @login_required
 def alltimes(request):
     
-    if not (request.user.groups.filter(name='LeadDesigner').exists() or request.user.groups.filter(name='AssociateDesigner').exists()):
+    if not (request.user.groups.filter(name='PrincipalDesigner').exists() or request.user.groups.filter(name='AssociateDesigner').exists()):
         return redirect('mytimes')
     
     initial_values = {
@@ -288,6 +288,29 @@ def create_entry(request):
         return redirect('mytasks')
 
     if request.method == 'POST':
+        form = TimeEntryForm(request.POST)
+        if form.is_valid():
+            time = form.save(commit=False)
+            time.employee = form.cleaned_data.get('employee')
+            time.client = form.cleaned_data.get('client')
+            time.hours = form.cleaned_data.get('hours')
+            time.job_type = form.cleaned_data.get('job_type')
+            time.save()
+            return redirect('alltimes')
+    else:
+        form = TimeEntryForm()
+
+    context = {
+        'form': form,
+    }
+    return render(request, 'timesheet/create_entry.html', context)
+
+@login_required
+def mycreate_entry(request):
+    if not request.user.has_perm('tasks.delete_task'):
+        return redirect('mytasks')
+
+    if request.method == 'POST':
         form = TimeEntryForm(request.POST, user=request.user)
         if form.is_valid():
             time = form.save(commit=False)
@@ -303,7 +326,7 @@ def create_entry(request):
     context = {
         'form': form,
     }
-    return render(request, 'timesheet/create_entry.html', context)
+    return render(request, 'timesheet/mycreate_entry.html', context)
 
 
 
@@ -315,10 +338,23 @@ def edit_entry(request, entry_id):
         if form.is_valid():
             form.save()
             # Redirect to success page or desired URL
-            return redirect('mytimes')
+            return redirect('alltimes')
     else:
         form = TimeEntryEditForm(instance=entry)
     return render(request, 'timesheet/edit_entry.html', {'form': form, 'entry': entry})
+
+@login_required
+def edit_myentry(request, entry_id):
+    entry = TimeEntry.objects.get(id=entry_id)
+    if request.method == 'POST':
+        form = MyTimeEntryEditForm(request.POST, instance=entry)
+        if form.is_valid():
+            form.save()
+            # Redirect to success page or desired URL
+            return redirect('mytimes')
+    else:
+        form = MyTimeEntryEditForm(instance=entry)
+    return render(request, 'timesheet/edit_myentry.html', {'form': form, 'entry': entry})
 
 @login_required
 def delete_time_fromall(request, entry_id):
@@ -382,8 +418,10 @@ def generate_report(request):
                 'breakdown': breakdown,
                 'start_date': start_date,
                 'end_date': end_date,
-                'lead_designer_rate': client.lead_designer_rate,
+                'principal_designer_rate': client.principal_designer_rate,
+                'senior_designer_rate': client.senior_designer_rate,
                 'associate_designer_rate': client.associate_designer_rate,
+                'junior_designer_rate': client.junior_designer_rate,
                 'admin_rate': client.admin_rate,
                 'client_name': client.client_name,
             }
@@ -401,7 +439,7 @@ def generate_report(request):
 def create_myentry(request):
 
     if request.method == 'POST':
-        form = TimeEntryForm(request.POST, user=request.user)
+        form = MyTimeEntryForm(request.POST, user=request.user)
         if form.is_valid():
             time = form.save(commit=False)
             time.employee = request.user
@@ -411,7 +449,7 @@ def create_myentry(request):
             time.save()
             return redirect('mytimes')
     else:
-        form = TimeEntryForm(user=request.user)
+        form = MyTimeEntryForm(user=request.user)
 
     context = {
         'form': form,

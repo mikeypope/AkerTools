@@ -20,10 +20,10 @@
                     <ul class="navbar-nav ml-auto">
                         {% if user.is_staff %}
                         <li class="nav-item {% if request.path == '/tasks/' %}active{% endif %}">
-                            <a class="nav-link" href="{% url 'task-home' %}">All Tasks</a>
+                            <a class="nav-link" href="{% url 'task-home' %}">Tasks</a>
                         </li>
                         <li class="nav-item {% if request.path == '/timesheet/' %}active{% endif %}">
-                            <a class="nav-link" href="{% url 'alltimes' %}">All Timesheets</a>
+                            <a class="nav-link" href="{% url 'alltimes' %}">Timesheets</a>
                         </li>
                         <li class="nav-item {% if request.path == '/timesheet/report' %}active{% endif %}">
                             <a class="nav-link" href="{% url 'generate_report' %}">Report</a>
@@ -42,7 +42,7 @@
                         <!-- Add more navigation items as needed -->
                         {% if user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                            <a class="nav-link" href="{% url 'logout' %}">[Logout {{ user.username }}]</a>
                         </li>
                         {% else %}
                         <li class="nav-item">

@@ -1,0 +1,16 @@
+{% extends "tasks/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+  <h1>Create Time Entry</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <style>
+      input[type="text"], input[type="number"], input[type="date"], select {
+        max-width: 250px;
+      }
+    </style>
+    <button type="submit">Save</button>
+  </form>
+{% endblock %}

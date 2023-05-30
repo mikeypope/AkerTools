@@ -8,8 +8,10 @@ from decimal import Decimal,ROUND_DOWN
 
 class Client(models.Model):
     client_name = models.CharField(max_length=255, unique=True)
-    lead_designer_rate = models.DecimalField(max_digits=5, decimal_places=2)
+    principal_designer_rate = models.DecimalField(max_digits=5, decimal_places=2)
+    senior_designer_rate = models.DecimalField(max_digits=5, decimal_places=2)
     associate_designer_rate = models.DecimalField(max_digits=5, decimal_places=2)
+    junior_designer_rate = models.DecimalField(max_digits=5, decimal_places=2)
     admin_rate = models.DecimalField(max_digits=5, decimal_places=2)
 
     def calculate_bill(self, start_date=None, end_date=None):
@@ -24,8 +26,10 @@ class Client(models.Model):
         time_entries = time_entries.filter(job_type__billable=1)
 
         employee_ranks = {
-            'LeadDesigner': self.lead_designer_rate,
+            'PrincipalDesigner': self.principal_designer_rate,
+            'SeniorDesigner': self.senior_designer_rate,
             'AssociateDesigner': self.associate_designer_rate,
+            'JuniorDesigner': self.junior_designer_rate,
             'Admin': self.admin_rate
         }
 

@@ -1,13 +1,24 @@
 {% extends "tasks/base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-  <h1>Time Entries</h1>
+  <h1>Timesheets</h1>
+  <a href="{% url 'create-entry' %}">Add New Entry</a>
+  <br>
+  <br>
   
   <form method="POST" action="{% url 'alltimes' %}">
     {% csrf_token %}
     {{ form }}
 
     <button type="submit">Apply Filters</button>
+    <style>
+      input[type="text"], input[type="number"], select {
+        max-width: 200px;
+      }
+      input[type="date"] {
+        max-width: 115px;
+      }
+    </style>
   </form>
   <br>
   <p>Total Hours Worked: {{ total_hours }}</p>

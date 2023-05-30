@@ -1,0 +1,20 @@
+{% extends "tasks/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+  <h1>Edit Time Entry</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+
+    <style>
+      input[type="text"], input[type="number"], input[type="date"], select {
+        max-width: 200px;
+      }
+    </style>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a href="{% url 'delete-entry' entry.id %}" class="btn btn-primary">Delete</a>
+  </form>
+{% endblock %}
+
