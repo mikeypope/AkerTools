@@ -2,8 +2,15 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseForbidden
 from .models import Task
 from django.contrib.auth.decorators import login_required
-from .forms import TaskUpdateForm, TaskCreateForm
+from .forms import TaskUpdateForm, TaskCreateForm, MyTaskUpdateForm
 from django.contrib import messages
+from django.utils import timezone
+
+
+
+@login_required
+def admin(request):
+    return redirect('admin')
 
 @login_required
 def home(request):
@@ -15,6 +22,7 @@ def home(request):
             logged_in_user = request.user
             task = form.save(commit=False)
             task.task_description = form.cleaned_data.get('task_description')
+            task.task_notes = form.cleaned_data.get('task_notes')
             task.created_by = logged_in_user
             task.save()
             return redirect('task-home')
@@ -65,31 +73,6 @@ def mycompletedtasks(request):
     }
     return render(request, 'tasks/mycompletedtasks.html', context)
 
-# @login_required
-# def edit_task(request, task_id):
-#     logged_in_user = request.user
-#     task = Task.objects.filter(id=task_id).first()
-
-#     if not task:
-#         # Task not found or not assigned to the logged-in user
-#         return HttpResponseNotFound()
-
-#     if request.method == 'POST':
-#         form = TaskUpdateForm(request.POST, instance=task)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('mytasks')
-#     else:
-#         form = TaskUpdateForm(instance=task)
-
-#     context = {
-#         'form': form,
-#         'task': task
-#     }
-#     return render(request, 'tasks/edit_task.html', context)
-from django.utils import timezone
-
-
 @login_required
 def edit_task(request, task_id):
     logged_in_user = request.user
@@ -117,6 +100,34 @@ def edit_task(request, task_id):
         'task': task
     }
     return render(request, 'tasks/edit_task.html', context)
+
+@login_required
+def edit_mytask(request, task_id):
+    logged_in_user = request.user
+    task = Task.objects.filter(id=task_id).first()
+
+    if not task:
+        # Task not found or not assigned to the logged-in user
+        return HttpResponseNotFound()
+
+    initial_values = {}
+
+    if not task.due_date:
+        initial_values['due_date'] = timezone.now().date()
+
+    if request.method == 'POST':
+        form = MyTaskUpdateForm(request.POST, instance=task)
+        if form.is_valid():
+            form.save()
+            return redirect('mytasks')
+    else:
+        form = MyTaskUpdateForm(instance=task, initial=initial_values)
+
+    context = {
+        'form': form,
+        'task': task
+    }
+    return render(request, 'tasks/edit_mytask.html', context)
 
 @login_required
 def delete_task(request, task_id):

@@ -3,7 +3,7 @@
 {% block content %}
         <div class="container">
             <div class="container">
-                <!-- Rest of the table code -->
+                <h3>Completed Tasks</h3>
             </div>
         </div>
             
@@ -28,9 +28,10 @@
                         <td>{{ task.assigned_to }}</td>
                         <td>{{ task.task_status }}</td>
                         <td>{{ task.task_description }}</td>
+                        <td>{{ task.task_notes }}</td>
                         <td>{{ task.task_kind }}</td>
                         <td>{{ task.for_client }}</td>
-                        <td>{{ task.due_date|date:"F d" }}</td>
+                        <td>{{ task.due_date|date:"n/j/Y" }}</td>
                         <td>{{ task.created_by }}</td>
                         <td>
                             <a href="{% url 'edit_task' task.id %}" >Edit</a>

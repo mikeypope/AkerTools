@@ -38,86 +38,8 @@ def send_task(request, task_id):
     time_entry.save()
 
     # Redirect the user to a success page or desired URL
-    return redirect('edit-entry', time_entry.id)
+    return redirect('edit-myentry', time_entry.id)
 
-# @login_required
-# def mytimes(request):
-#     initial_values = {
-#         'start_date': timezone.now().date().replace(day=1),
-#         'end_date': timezone.now().date(),
-#     }
-#     form = MyTimeEntryFilterForm()
-
-#     if request.method == 'POST':
-#         form = MyTimeEntryFilterForm(request.POST)
-#         if form.is_valid():
-#             logged_in_user = request.user
-#             start_date = form.cleaned_data['start_date']
-#             end_date = form.cleaned_data['end_date']
-#             client = form.cleaned_data['client']
-#             times = TimeEntry.objects.filter(employee=logged_in_user)
-#             if start_date and end_date:
-#                 times = times.filter(date__range=[start_date, end_date])
-
-#             if client:
-#                 times = times.filter(client=client)
-
-#             context = {
-#                 'form': form,
-#                 'times': times,
-#                 'start_date': start_date,
-#                 'end_date': end_date,
-#             }
-#             return render(request, 'timesheet/mytimesheet.html', context)
-#     context = {
-#         'form': form,
-#     }
-#     return render(request, 'timesheet/mytimesheet.html', context)
-# @login_required
-# def mytimes(request):
-#     initial_values = {
-#         'start_date': timezone.now().date().replace(day=1),
-#         'end_date': timezone.now().date(),
-#     }
-
-#     if request.method == 'POST':
-#         form = MyTimeEntryFilterForm(request.POST)
-#         if form.is_valid():
-#             logged_in_user = request.user
-#             start_date = form.cleaned_data['start_date']
-#             end_date = form.cleaned_data['end_date']
-#             client = form.cleaned_data['client']
-#             times = TimeEntry.objects.filter(employee=logged_in_user).order_by('-date')
-#             if start_date and end_date:
-#                 times = times.filter(date__range=[start_date, end_date])
-
-#             if client:
-#                 times = times.filter(client=client)
-
-#             context = {
-#                 'form': form,
-#                 'times': times,
-#                 'start_date': start_date,
-#                 'end_date': end_date,
-#             }
-#             return render(request, 'timesheet/mytimesheet.html', context)
-#     else:
-#         form = MyTimeEntryFilterForm(initial=initial_values)
-#         logged_in_user = request.user
-#         times = TimeEntry.objects.filter(employee=logged_in_user).order_by('-date')
-#         start_date = initial_values['start_date']
-#         end_date = initial_values['end_date']
-
-#         if start_date and end_date:
-#             times = times.filter(date__range=[start_date, end_date])
-
-#         context = {
-#             'form': form,
-#             'times': times,
-#             'start_date': start_date,
-#             'end_date': end_date,
-#         }
-#         return render(request, 'timesheet/mytimesheet.html', context)
 @login_required
 def mytimes(request):
     initial_values = {
@@ -176,48 +98,6 @@ def mytimes(request):
         return render(request, 'timesheet/mytimesheet.html', context)
 
 
-# @login_required
-# def alltimes(request):
-#     if not request.user.groups.filter(name='LeadDesigner').exists():
-#         return redirect('mytimes')
-#     initial_values = {
-#         'start_date': timezone.now().date().replace(day=1),
-#         'end_date': timezone.now().date(),
-#     }
-#     form = TimeEntryFilterForm()
-
-#     if request.method == 'POST':
-#         form = TimeEntryFilterForm(request.POST)
-
-#         if form.is_valid():
-#             employee = form.cleaned_data['employee']
-#             start_date = form.cleaned_data['start_date']
-#             end_date = form.cleaned_data['end_date']
-#             client = form.cleaned_data['client']
-
-#             time_entries = TimeEntry.objects.all().order_by('date')
-
-#             if employee:
-#                 time_entries = time_entries.filter(employee=employee)
-
-#             if start_date and end_date:
-#                 time_entries = time_entries.filter(date__range=[start_date, end_date])
-
-#             if client:
-#                 time_entries = time_entries.filter(client=client)
-
-#             context = {
-#                 'form': form,
-#                 'times': time_entries,
-#                 'start_date': start_date,
-#                 'end_date': end_date,
-#             }
-#             return render(request, 'timesheet/timesheet.html', context)
-
-#     context = {
-#         'form': form,
-#     }
-#     return render(request, 'timesheet/timesheet.html', context)
 @login_required
 def alltimes(request):
     
@@ -424,6 +304,7 @@ def generate_report(request):
                 'junior_designer_rate': client.junior_designer_rate,
                 'admin_rate': client.admin_rate,
                 'client_name': client.client_name,
+                'zack_rate': client.zack_rate,
             }
             return render(request, 'timesheet/report.html', context)
     else:
@@ -454,4 +335,4 @@ def create_myentry(request):
     context = {
         'form': form,
     }
-    return render(request, 'timesheet/create_entry.html', context)
+    return render(request, 'timesheet/mycreate_entry.html', context)

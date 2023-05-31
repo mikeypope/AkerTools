@@ -27,11 +27,11 @@
                     
                     <th>Assigned To</th>
                     <th>Status</th>
-                    <th>Description</th>
                     <th>Kind</th>
                     <th>Client</th>
+                    <th>Description</th>
+                    <th>Notes</th>
                     <th>Due Date</th>
-                    <th>Created By</th>
                     <th>Actions</th>  <!-- Add Actions column -->
                 </tr>
             </thead>
@@ -40,11 +40,11 @@
                     <tr>
                         <td>{{ task.assigned_to }}</td>
                         <td>{{ task.task_status }}</td>
-                        <td>{{ task.task_description }}</td>
                         <td>{{ task.task_kind }}</td>
                         <td>{{ task.for_client }}</td>
-                        <td>{{ task.due_date|date:"l F d" }}</td>
-                        <td>{{ task.created_by }}</td>
+                        <td>{{ task.task_description }}</td>
+                        <td>{{ task.task_notes }}</td>
+                        <td>{{ task.due_date|date:"n/j/Y" }}</td>
                         <td>
                             <a href="{% url 'edit_task' task.id %}" >Edit</a>
                             <a href="{% url 'delete_task_fromall' task.id %}" >Delete</a>

@@ -13,6 +13,7 @@ class Client(models.Model):
     associate_designer_rate = models.DecimalField(max_digits=5, decimal_places=2)
     junior_designer_rate = models.DecimalField(max_digits=5, decimal_places=2)
     admin_rate = models.DecimalField(max_digits=5, decimal_places=2)
+    zack_rate = models.DecimalField(max_digits=5, decimal_places=2)
 
     def calculate_bill(self, start_date=None, end_date=None):
         breakdown = {}
@@ -30,7 +31,8 @@ class Client(models.Model):
             'SeniorDesigner': self.senior_designer_rate,
             'AssociateDesigner': self.associate_designer_rate,
             'JuniorDesigner': self.junior_designer_rate,
-            'Admin': self.admin_rate
+            'Admin': self.admin_rate,
+            'Zack': self.zack_rate
         }
 
         for employee_rank, rate in employee_ranks.items():
@@ -42,10 +44,14 @@ class Client(models.Model):
 
             employee_hours = sum(job_types.values()) or Decimal('0.00')
 
+            rank_total = employee_hours * rate
+            rank_total = rank_total.quantize(Decimal('0.00'), rounding=ROUND_DOWN)
+
             breakdown[employee_rank] = {
                 'hours_worked': employee_hours,
                 'job_types': job_types,
                 'rate': rate,
+                'rank_total': rank_total,
             }
 
             bill_amount += employee_hours * Decimal(rate)
@@ -78,6 +84,7 @@ class Task(models.Model):
     assigned_to = models.ForeignKey(User, on_delete=models.CASCADE, related_name='assigned_tasks', null=True, default=None)
     task_kind = models.ForeignKey(JobType, on_delete=models.CASCADE, null=True, default=None)
     task_description = models.TextField(null=True, default=None)
+    task_notes = models.TextField(null=True, default=None)
     task_status = models.ForeignKey(TaskStatus, on_delete=models.CASCADE, null=True, default=None)
     for_client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='tasks', null=True, default=None)
     due_date = models.DateField(default=None, null=True)

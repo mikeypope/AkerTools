@@ -19,6 +19,9 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ml-auto">
                         {% if user.is_staff %}
+                        <li class="nav-item {% if request.path == '/admin/' %}active{% endif %}">
+                           <small> <a class="nav-link" href="/admin">Admin</a></small>
+                        </li>
                         <li class="nav-item {% if request.path == '/tasks/' %}active{% endif %}">
                             <a class="nav-link" href="{% url 'task-home' %}">Tasks</a>
                         </li>
@@ -42,7 +45,7 @@
                         <!-- Add more navigation items as needed -->
                         {% if user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'logout' %}">[Logout {{ user.username }}]</a>
+                            <small><a class="nav-link" href="{% url 'logout' %}">[Logout {{ user.username }}]</a></small>
                         </li>
                         {% else %}
                         <li class="nav-item">

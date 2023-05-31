@@ -37,7 +37,7 @@
     <tbody>
       {% for entry in times %}
         <tr>
-          <td>{{ entry.date }}</td>
+          <td>{{ entry.date|date:"n/j/Y" }}</td>
           <td>{{ entry.employee }}</td>
           <td>{{ entry.client }}</td>
           <td>{{ entry.hours_worked }}</td>

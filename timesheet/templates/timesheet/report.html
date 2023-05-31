@@ -3,28 +3,29 @@
 
 {% block content %}
 <body>
-    <h1>Billing Report</h1>
+    <h1>Report</h1>
     <form method="POST" action="{% url 'generate_report' %}">
         {% csrf_token %}
         {{ form }}
         
         <input type="submit" value="Generate Report">
     </form>
-
+    <br>
     {% if bill_amount and breakdown %}
-        <h4>--------------------------------------------------------</h4>
-        for <b>{{start_date}}</b> to <b>{{end_date}}</b>, the total amount to bill <b>{{ client_name }}</b> is <b>${{ bill_amount }}</b>
-        <h4>--------------------------------------------------------</h4>
-
+       
         {% for key, value in breakdown.items %}
-            <b>{{ key }}s</b> worked <b>{{ value.hours_worked }}</b> hours total at <b>${{value.rate}}</b> per hour
+            <b>{{ key }}s</b> worked <b>{{ value.hours_worked }}</b> hours total at <b>${{value.rate}}</b> per hour totalling: <b>${{ value.rank_total }}</b>
                 <ul>
                     {% for job_type, job_hours in value.job_types.items %}
-                        {{ job_type }}: {{ job_hours }} hours<br>
+                        <i>{{ job_type }}: {{ job_hours }} hours</i><br>
                     {% endfor %}
                 </ul>
             
         {% endfor %}
+        <h4>--------------------------------------------------------</h4>
+        for <b>{{start_date}}</b> to <b>{{end_date}}</b>, the total amount to bill <b>{{ client_name }}</b> is <b>${{ bill_amount }}</b>
+        <h4>--------------------------------------------------------</h4>
+
     {% endif %}
 </body>
 {% endblock %}
