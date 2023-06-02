@@ -2,42 +2,43 @@
 {% load crispy_forms_tags %}
 {% block content %}
         <h3>My Completed Tasks</h3>
-        <table class="table mt-4">
-            <thead>
-                <tr>
-                    
-                    
-                    <th>Status</th>
-                    <th>Description</th>
-                    <th>Kind</th>
-                    <th>Client</th>
-                    <th>Due Date</th>
-                    <th>Created By</th>
-                    <th>Actions</th>  <!-- Add Actions column -->
-                </tr>
-            </thead>
-            <tbody>
-                {% for task in tasks %}
+        <div class="table-responsive">
+            <table class="table mt-4">
+                <thead>
                     <tr>
                         
-                        <td>{{ task.task_status }}</td>
-                        <td>{{ task.task_description }}</td>
-                        <td>{{ task.task_notes }}</td>
-                        <td>{{ task.task_kind }}</td>
-                        <td>{{ task.for_client }}</td>
-                        <td>{{ task.due_date|date:"n/j/Y" }}</td>
-                        <td>{{ task.created_by }}</td>
-                        <td>
-                            <a href="{% url 'send_task' task.id %}" >Send</a> <br>
-                            <a href="{% url 'edit_task' task.id %}" >Edit</a>
-                        </td>
+                        
+                        <th>Status</th>
+                        <th>Description</th>
+                        <th>Kind</th>
+                        <th>Client</th>
+                        <th>Due Date</th>
+                        <th>Created By</th>
+                        <th>Actions</th>  <!-- Add Actions column -->
                     </tr>
-                {% empty %}
-                    <tr>
-                        <td colspan="7">You have no tasks assigned.</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+                </thead>
+                <tbody>
+                    {% for task in tasks %}
+                        <tr>
+                            
+                            <td>{{ task.task_status }}</td>
+                            <td>{{ task.task_description }}</td>
+                            <td>{{ task.task_notes }}</td>
+                            <td>{{ task.task_kind }}</td>
+                            <td>{{ task.for_client }}</td>
+                            <td>{{ task.due_date|date:"n/j/Y" }}</td>
+                            <td>{{ task.created_by }}</td>
+                            <td>
+                                <a href="{% url 'send_task' task.id %}" >Send</a> <br>
+                                <a href="{% url 'edit_task' task.id %}" >Edit</a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="7">You have no tasks assigned.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
 {% endblock content %}

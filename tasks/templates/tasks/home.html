@@ -2,6 +2,7 @@
 {% load crispy_forms_tags %}
 {% block content %}
         <h1>Tasks</h1>
+        
         <div class="container">
             <div class="container">
                 <form method="POST" action="">
@@ -17,49 +18,49 @@
                 
                 <!-- Rest of the table code -->
             </div>
+            <form action="{% url 'completedtasks' %}">
+                <button class="btn btn-link" type="submit">Completed Tasks</button>
+            </form>
         </div>
         
-            
-        <table class="table mt-4">
-            <thead>
-                
-                <tr>
+        <div class="table-responsive">   
+            <table class="table mt-8">
+                <thead>
                     
-                    <th>Assigned</th>
-                    <th>Status</th>
-                    <th>Kind</th>
-                    <th>Client</th>
-                    <th>Description</th>
-                    <th>Notes</th>
-                    <th>Due Date</th>
-                    <th>Actions</th>  <!-- Add Actions column -->
-                </tr>
-            </thead>
-            <tbody>
-                {% for task in tasks %}
                     <tr>
-                        <td>{{ task.assigned_to }}</td>
-                        <td>{{ task.task_status }}</td>
-                        <td>{{ task.task_kind }}</td>
-                        <td>{{ task.for_client }}</td>
-                        <td>{{ task.task_description }}</td>
-                        <td>{{ task.task_notes }}</td>
-                        <td>{{ task.due_date|date:"n/j/Y" }}</td>
-                        <td>
-                            <a href="{% url 'edit_task' task.id %}" >Edit</a>
-                            <a href="{% url 'delete_task_fromall' task.id %}" >Delete</a>
-                        </td>
+                        
+                        <th>Assigned</th>
+                        <th>Status</th>
+                        <th>Kind</th>
+                        <th>Client</th>
+                        <th>Description</th>
+                        <th>Notes</th>
+                        <th>Due Date</th>
+                        <th>Actions</th>  <!-- Add Actions column -->
                     </tr>
-                {% empty %}
-                    <tr>
-                        <td colspan="7">No tasks found.</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <form action="{% url 'completedtasks' %}">
-            <button class="btn btn-link" type="submit">Completed Tasks</button>
-        </form>
+                </thead>
+                <tbody>
+                    {% for task in tasks %}
+                        <tr>
+                            <td>{{ task.assigned_to }}</td>
+                            <td class="text-lg-left">{{ task.task_status }}</td>
+                            <td>{{ task.task_kind }}</td>
+                            <td>{{ task.for_client }}</td>
+                            <td>{{ task.task_description }}</td>
+                            <td>{{ task.task_notes }}</td>
+                            <td>{{ task.due_date|date:"n/j/Y" }}</td>
+                            <td>
+                                <a href="{% url 'edit_task' task.id %}" >Edit</a>
+                                <a href="{% url 'delete_task_fromall' task.id %}" >Delete</a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="7">No tasks found.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-        
+
 {% endblock content %}

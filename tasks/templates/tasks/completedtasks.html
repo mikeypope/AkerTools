@@ -6,45 +6,45 @@
                 <h3>Completed Tasks</h3>
             </div>
         </div>
-            
-        <table class="table mt-4">
-            <thead>
-                
-                <tr>
+        <div class="table-responsive">    
+            <table class="table mt-4">
+                <thead>
                     
-                    <th>Assigned To</th>
-                    <th>Status</th>
-                    <th>Description</th>
-                    <th>Kind</th>
-                    <th>Client</th>
-                    <th>Due Date</th>
-                    <th>Created By</th>
-                    <th>Actions</th>  <!-- Add Actions column -->
-                </tr>
-            </thead>
-            <tbody>
-                {% for task in tasks %}
                     <tr>
-                        <td>{{ task.assigned_to }}</td>
-                        <td>{{ task.task_status }}</td>
-                        <td>{{ task.task_description }}</td>
-                        <td>{{ task.task_notes }}</td>
-                        <td>{{ task.task_kind }}</td>
-                        <td>{{ task.for_client }}</td>
-                        <td>{{ task.due_date|date:"n/j/Y" }}</td>
-                        <td>{{ task.created_by }}</td>
-                        <td>
-                            <a href="{% url 'edit_task' task.id %}" >Edit</a>
-                            <a href="{% url 'delete_task_fromall' task.id %}" >Delete</a>
-                        </td>
+                        
+                        <th>Assigned To</th>
+                        <th>Status</th>
+                        <th>Description</th>
+                        <th>Kind</th>
+                        <th>Client</th>
+                        <th>Due Date</th>
+                        <th>Created By</th>
+                        <th>Actions</th>  <!-- Add Actions column -->
                     </tr>
-                {% empty %}
-                    <tr>
-                        <td colspan="7">No tasks found.</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {% for task in tasks %}
+                        <tr>
+                            <td>{{ task.assigned_to }}</td>
+                            <td>{{ task.task_status }}</td>
+                            <td>{{ task.task_description }}</td>
+                            <td>{{ task.task_notes }}</td>
+                            <td>{{ task.task_kind }}</td>
+                            <td>{{ task.for_client }}</td>
+                            <td>{{ task.due_date|date:"n/j/Y" }}</td>
+                            <td>{{ task.created_by }}</td>
+                            <td>
+                                <a href="{% url 'edit_task' task.id %}" >Edit</a>
+                                <a href="{% url 'delete_task_fromall' task.id %}" >Delete</a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="7">No tasks found.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
         
 {% endblock content %}
