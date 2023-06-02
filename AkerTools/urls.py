@@ -27,6 +27,7 @@ urlpatterns = [
     path('register/', user_views.register, name='register'),
     path('tasks/', include('tasks.urls')),
     path('mytasks/', task_views.mytasks, name='mytasks'),
+    path('mytasks/create/', task_views.create_mytask, name='create-mytask'),
     path('mycompletedtasks/', task_views.mycompletedtasks, name='mycompletedtasks'),
     #path('edit_task/', task_views.edit_task, name='edit_task'),
     path('send_task/<int:task_id>', time_views.send_task, name='send_task'),

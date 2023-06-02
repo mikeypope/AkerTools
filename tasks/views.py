@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseForbidden
 from .models import Task
 from django.contrib.auth.decorators import login_required
-from .forms import TaskUpdateForm, TaskCreateForm, MyTaskUpdateForm
+from .forms import TaskUpdateForm, TaskCreateForm, MyTaskUpdateForm, MyTaskCreateForm
 from django.contrib import messages
 from django.utils import timezone
 
@@ -14,7 +14,7 @@ def admin(request):
 
 @login_required
 def home(request):
-    if not request.user.has_perm('tasks.delete_task') :
+    if not request.user.is_staff:
         return redirect('mytasks')
     if request.method == 'POST' :
         form = TaskCreateForm(request.POST)
@@ -36,7 +36,7 @@ def home(request):
 
 @login_required
 def completedtasks(request):
-    if not request.user.has_perm('tasks.delete_task') :
+    if not request.user.is_staff:
         return redirect('mytasks')
     if request.method == 'POST' :
         form = TaskCreateForm(request.POST)
@@ -166,3 +166,22 @@ def delete_task_fromall(request, task_id):
     return render(request, 'tasks/home.html')
 
 
+@login_required
+def create_mytask(request):
+    if request.method == 'POST' :
+            form = MyTaskCreateForm(request.POST)
+            if form.is_valid():
+                logged_in_user = request.user
+                task = form.save(commit=False)
+                task.task_description = form.cleaned_data.get('task_description')
+                task.task_notes = form.cleaned_data.get('task_notes')
+                task.created_by = logged_in_user
+                task.assigned_to = logged_in_user
+                task.save()
+                return redirect('mytasks')
+    else:
+        form = MyTaskCreateForm()
+    context = {
+        'form': form,
+    }
+    return render(request, 'tasks/create_mytask.html', context)
