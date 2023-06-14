@@ -64,18 +64,32 @@ def home(request):
 def completedtasks(request):
     if not request.user.is_staff:
         return redirect('mytasks')
-    if request.method == 'POST' :
-        form = TaskCreateForm(request.POST)
-        if form.is_valid():
-            logged_in_user = request.user
-            task = form.save(commit=False)
-            task.task_description = form.cleaned_data.get('task_description')
-            task.created_by = logged_in_user
-            task.save()
-            return redirect('task-home')
+        
     else:
-        form = TaskCreateForm()
-    context = {
+        form_filter = TaskFilterForm(request.POST)
+        if form_filter.is_valid():
+            assigned_to = form_filter.cleaned_data['assigned_to']
+            client = form_filter.cleaned_data['client']
+            job_type = form_filter.cleaned_data['job_type']
+            
+            tasks = Task.objects.all().filter(task_status='1').order_by('due_date')
+            
+            if assigned_to:
+                tasks = tasks.filter(assigned_to=assigned_to)
+
+            if client:
+                tasks = tasks.filter(for_client=client)
+
+            if job_type:
+                tasks = tasks.filter(job_type=job_type)
+
+            context = {
+                'form_filter': form_filter,
+                'tasks': tasks,
+            }
+            return render(request, 'tasks/completedtasks.html', context)
+        form_filter = TaskFilterForm()
+        context = {
          'tasks' : Task.objects.all().filter(task_status='1').order_by('due_date')
     }
     return render(request, 'tasks/completedtasks.html', context)
