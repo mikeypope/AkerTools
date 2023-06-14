@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseForbidden
 from .models import Task
 from django.contrib.auth.decorators import login_required
-from .forms import TaskUpdateForm, TaskCreateForm, MyTaskUpdateForm, MyTaskCreateForm
+from .forms import TaskUpdateForm, TaskCreateForm, MyTaskUpdateForm, MyTaskCreateForm, TaskFilterForm, MyTaskFilterForm
 from django.contrib import messages
 from django.utils import timezone
 
@@ -18,6 +18,7 @@ def home(request):
         return redirect('mytasks')
     if request.method == 'POST' :
         form = TaskCreateForm(request.POST)
+        form_filter = TaskFilterForm(request.POST)
         if form.is_valid():
             logged_in_user = request.user
             task = form.save(commit=False)
@@ -26,10 +27,35 @@ def home(request):
             task.created_by = logged_in_user
             task.save()
             return redirect('task-home')
+        if form_filter.is_valid():
+            assigned_to = form_filter.cleaned_data['assigned_to']
+            client = form_filter.cleaned_data['client']
+            job_type = form_filter.cleaned_data['job_type']
+            
+            tasks = Task.objects.all().exclude(task_status='1').order_by('due_date')
+            
+            if assigned_to:
+                tasks = tasks.filter(assigned_to=assigned_to)
+
+            if client:
+                tasks = tasks.filter(for_client=client)
+
+            if job_type:
+                tasks = tasks.filter(job_type=job_type)
+
+            context = {
+                'form' : TaskCreateForm(),
+                'form_filter': form_filter,
+                'tasks': tasks,
+            }
+            return render(request, 'tasks/home.html', context)
+            
     else:
         form = TaskCreateForm()
+        form_filter = TaskFilterForm()
     context = {
         'form': form,
+        'form_filter' : form_filter,
          'tasks' : Task.objects.all().exclude(task_status='1').order_by('due_date')
     }
     return render(request, 'tasks/home.html', context)
@@ -57,21 +83,64 @@ def completedtasks(request):
 @login_required
 def mytasks(request):
     logged_in_user = request.user
-    tasks = Task.objects.filter(assigned_to=logged_in_user).exclude(task_status='1').order_by('due_date')
-    context = {
-        'tasks': tasks
-    }
-    return render(request, 'tasks/mytasks.html', context)
+    form_filter = MyTaskFilterForm(request.POST)
+    if form_filter.is_valid():
+            client = form_filter.cleaned_data['client']
+            job_type = form_filter.cleaned_data['job_type']
+            
+            tasks = Task.objects.filter(assigned_to=logged_in_user).exclude(task_status='1').order_by('due_date')
+            
+            if client:
+                tasks = tasks.filter(for_client=client)
+
+            if job_type:
+                tasks = tasks.filter(job_type=job_type)
+
+            context = {
+                'form_filter': form_filter,
+                'tasks': tasks,
+            }
+            return render(request, 'tasks/mytasks.html', context)
+    else:
+        tasks = Task.objects.filter(assigned_to=logged_in_user).exclude(task_status='1').order_by('due_date')
+        form_filter = MyTaskFilterForm()
+        context = {
+                'form_filter': form_filter,
+                'tasks': tasks,
+            }
+        return render(request, 'tasks/mytasks.html', context)
 
 
 @login_required
 def mycompletedtasks(request):
     logged_in_user = request.user
     tasks = Task.objects.filter(assigned_to=logged_in_user,task_status='1').order_by('due_date')
-    context = {
-        'tasks': tasks
-    }
-    return render(request, 'tasks/mycompletedtasks.html', context)
+    form_filter = MyTaskFilterForm()
+    if form_filter.is_valid():
+            client = form_filter.cleaned_data['client']
+            job_type = form_filter.cleaned_data['job_type']
+            
+            tasks = Task.objects.filter(assigned_to=logged_in_user,task_status='1').order_by('due_date')
+            
+            if client:
+                tasks = tasks.filter(for_client=client)
+
+            if job_type:
+                tasks = tasks.filter(job_type=job_type)
+
+            context = {
+                'form_filter': form_filter,
+                'tasks': tasks,
+            }
+            return render(request, 'tasks/mycompletedtasks.html', context)
+    else:
+        tasks = Task.objects.filter(assigned_to=logged_in_user,task_status='1').order_by('due_date')
+        form_filter = MyTaskFilterForm()
+        context = {
+                'form_filter': form_filter,
+                'tasks': tasks,
+            }
+        return render(request, 'tasks/mycompletedtasks.html', context)
 
 @login_required
 def edit_task(request, task_id):

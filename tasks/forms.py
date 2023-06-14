@@ -109,3 +109,37 @@ class MyTaskCreateForm(forms.ModelForm):
         self.fields['task_status'].queryset = TaskStatus.objects.order_by('status')
         self.fields['for_client'].queryset = Client.objects.order_by('client_name')
 
+class TaskFilterForm(forms.Form):
+    # start_date = forms.DateField(label='Start Date', widget=forms.DateInput(attrs={'type': 'date'}),required=False)
+    # end_date = forms.DateField(label='End Date', widget=forms.DateInput(attrs={'type': 'date'}),required=False)
+    client = forms.ModelChoiceField(
+        queryset=Client.objects.all().order_by('client_name'),
+        empty_label='All Clients',
+        required=False
+    )
+    job_type = forms.ModelChoiceField(
+        queryset=JobType.objects.all().order_by('job_type'),
+        empty_label='All Job Types',
+        required=False
+    )
+    assigned_to = forms.ModelChoiceField(
+        queryset=User.objects.all().order_by('username'),
+        empty_label='All Employees',
+        required=False
+    )
+        
+class MyTaskFilterForm(forms.Form):
+    # start_date = forms.DateField(label='Start Date', widget=forms.DateInput(attrs={'type': 'date'}),required=False)
+    # end_date = forms.DateField(label='End Date', widget=forms.DateInput(attrs={'type': 'date'}),required=False)
+    client = forms.ModelChoiceField(
+        queryset=Client.objects.all().order_by('client_name'),
+        empty_label='All Clients',
+        required=False
+    )
+    job_type = forms.ModelChoiceField(
+        queryset=JobType.objects.all().order_by('job_type'),
+        empty_label='All Job Types',
+        required=False
+    )
+    
+

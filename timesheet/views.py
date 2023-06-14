@@ -40,12 +40,70 @@ def send_task(request, task_id):
     # Redirect the user to a success page or desired URL
     return redirect('edit-myentry', time_entry.id)
 
+# @login_required
+# def mytimes(request):
+#     initial_values = {
+#         'start_date': timezone.now().date().replace(day=1),
+#         'end_date': timezone.now().date(),
+#     }
+
+#     if request.method == 'POST':
+#         form = MyTimeEntryFilterForm(request.POST)
+#         if form.is_valid():
+#             logged_in_user = request.user
+#             start_date = form.cleaned_data['start_date']
+#             end_date = form.cleaned_data['end_date']
+#             client = form.cleaned_data['client']
+#             job_type = form.cleaned_data['job_type']
+#             times = TimeEntry.objects.filter(employee=logged_in_user).order_by('-date')
+            
+#             if start_date and end_date:
+#                 times = times.filter(date__range=[start_date, end_date])
+
+#             if client:
+#                 times = times.filter(client=client)
+            
+#             if job_type:
+#                 times = times.filter(job_type=job_type)
+
+#             total_hours = times.aggregate(Sum('hours_worked'))['hours_worked__sum']
+            
+#             context = {
+#                 'form': form,
+#                 'times': times,
+#                 'start_date': start_date,
+#                 'end_date': end_date,
+#                 'total_hours': total_hours,
+#             }
+#             return render(request, 'timesheet/mytimesheet.html', context)
+#     else:
+#         form = MyTimeEntryFilterForm(initial=initial_values)
+#         logged_in_user = request.user
+#         times = TimeEntry.objects.filter(employee=logged_in_user).order_by('-date')
+#         start_date = initial_values['start_date']
+#         end_date = initial_values['end_date']
+
+#         if start_date and end_date:
+#             times = times.filter(date__range=[start_date, end_date])
+
+#         total_hours = times.aggregate(Sum('hours_worked'))['hours_worked__sum']
+        
+#         context = {
+#             'form': form,
+#             'times': times,
+#             'start_date': start_date,
+#             'end_date': end_date,
+#             'total_hours': total_hours,
+#         }
+#         return render(request, 'timesheet/mytimesheet.html', context)
 @login_required
 def mytimes(request):
     initial_values = {
         'start_date': timezone.now().date().replace(day=1),
         'end_date': timezone.now().date(),
     }
+
+    form = MyTimeEntryFilterForm()
 
     if request.method == 'POST':
         form = MyTimeEntryFilterForm(request.POST)
@@ -76,26 +134,25 @@ def mytimes(request):
                 'total_hours': total_hours,
             }
             return render(request, 'timesheet/mytimesheet.html', context)
-    else:
-        form = MyTimeEntryFilterForm(initial=initial_values)
-        logged_in_user = request.user
-        times = TimeEntry.objects.filter(employee=logged_in_user).order_by('-date')
-        start_date = initial_values['start_date']
-        end_date = initial_values['end_date']
 
-        if start_date and end_date:
-            times = times.filter(date__range=[start_date, end_date])
+    logged_in_user = request.user
+    times = TimeEntry.objects.filter(employee=logged_in_user).order_by('-date')
+    start_date = initial_values['start_date']
+    end_date = initial_values['end_date']
 
-        total_hours = times.aggregate(Sum('hours_worked'))['hours_worked__sum']
+    if start_date and end_date:
+        times = times.filter(date__range=[start_date, end_date])
+
+    total_hours = times.aggregate(Sum('hours_worked'))['hours_worked__sum']
         
-        context = {
-            'form': form,
-            'times': times,
-            'start_date': start_date,
-            'end_date': end_date,
-            'total_hours': total_hours,
-        }
-        return render(request, 'timesheet/mytimesheet.html', context)
+    context = {
+        'form': form,
+        'times': times,
+        'start_date': start_date,
+        'end_date': end_date,
+        'total_hours': total_hours,
+    }
+    return render(request, 'timesheet/mytimesheet.html', context)
 
 
 @login_required
@@ -160,6 +217,7 @@ def alltimes(request):
             'total_hours': total_hours
         }
         return render(request, 'timesheet/timesheet.html', context)
+
 
 
 @login_required
@@ -315,6 +373,7 @@ def generate_report(request):
             'clients': clients,
         }
         return render(request, 'timesheet/report.html', context)
+
     
 @login_required
 def create_myentry(request):

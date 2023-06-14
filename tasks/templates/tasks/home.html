@@ -1,6 +1,18 @@
 {% extends "tasks/base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
+<style>
+    body {
+        font-size: 80%;
+    }
+    h1, p, th, a {
+        font-size: 80%;
+    }
+    td {
+        font-size: 70%;
+    }
+    /* Add more CSS rules for other elements as needed */
+  </style>
         <h1>Tasks</h1>
         
         <div class="container">
@@ -11,18 +23,50 @@
                 
                    
                 
-                    <button type="submit" class="btn btn-primary">Add Task</button>
-
+                    <button type="submit" class="btn btn-primary btn-sm" style='font-size: 80%'>Add Task</button>
+                    <style>
+                        font-size:80%,
+                        input[type="text"],
+                        input[type="number"],
+                        select{
+                            max-width: 200px;
+                            font-size: 80%;
+                        }
+                        input[type="date"] {
+                            max-width: 115px;
+                            font-size: 80%;
+                        }
+                    </style>
                 </form>
                 
                 
                 <!-- Rest of the table code -->
             </div>
             <form action="{% url 'completedtasks' %}">
-                <button class="btn btn-link" type="submit">Completed Tasks</button>
+                <button class="btn btn-link" type="submit" style='font-size: 80%'>Completed Tasks</button>
             </form>
         </div>
-        
+        <div>
+            <form method="POST" action="">
+                {% csrf_token %}
+                {{ form_filter }}
+            
+                <button type="submit" style="font-size: 80%">Apply Filters</button>
+                <style>
+    
+                    input[type="text"],
+                    input[type="number"],
+                    select{
+                        max-width: 200px;
+                        font-size: 80%;
+                    }
+                    input[type="date"] {
+                        max-width: 115px;
+                        font-size: 80%;
+                    }
+                </style>
+            </form>
+        </div>
         <div class="table-responsive">   
             <table class="table mt-8">
                 <thead>
@@ -30,6 +74,7 @@
                     <tr>
                         
                         <th>Assigned</th>
+                        <th>Created</th>
                         <th>Status</th>
                         <th>Kind</th>
                         <th>Client</th>
@@ -42,7 +87,8 @@
                 <tbody>
                     {% for task in tasks %}
                         <tr>
-                            <td>{{ task.assigned_to }}</td>
+                            <td style='font-size: 70%'>{{ task.assigned_to }}</td>
+                            <td style='font-size: 70%'>{{ task.created_by }}</td>
                             <td class="text-lg-left">{{ task.task_status }}</td>
                             <td>{{ task.task_kind }}</td>
                             <td>{{ task.for_client }}</td>

@@ -1,7 +1,40 @@
 {% extends "tasks/base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-        <h3>My Completed Tasks</h3>
+<style>
+    body {
+        font-size: 80%;
+    }
+    h1, p, th, a {
+        font-size: 80%;
+    }
+    td {
+        font-size: 70%;
+    }
+    /* Add more CSS rules for other elements as needed */
+</style>
+        <h1>My Completed Tasks</h1>
+        <div>
+            <form method="POST" action="">
+                {% csrf_token %}
+                {{ form_filter }}
+            
+                <button type="submit" style="font-size: 80%">Apply Filters</button>
+                <style>
+    
+                    input[type="text"],
+                    input[type="number"],
+                    select{
+                        max-width: 200px;
+                        font-size: 80%;
+                    }
+                    input[type="date"] {
+                        max-width: 115px;
+                        font-size: 80%;
+                    }
+                </style>
+            </form>
+        </div>
         <div class="table-responsive">
             <table class="table mt-4">
                 <thead>
@@ -23,14 +56,13 @@
                             
                             <td>{{ task.task_status }}</td>
                             <td>{{ task.task_description }}</td>
-                            <td>{{ task.task_notes }}</td>
                             <td>{{ task.task_kind }}</td>
                             <td>{{ task.for_client }}</td>
                             <td>{{ task.due_date|date:"n/j/Y" }}</td>
                             <td>{{ task.created_by }}</td>
                             <td>
-                                <a href="{% url 'send_task' task.id %}" >Send</a> <br>
                                 <a href="{% url 'edit_task' task.id %}" >Edit</a>
+                                <a href="{% url 'send_task' task.id %}" >Add Time</a>
                             </td>
                         </tr>
                     {% empty %}

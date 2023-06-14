@@ -1,6 +1,18 @@
 {% extends "tasks/base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
+<style>
+  body {
+      font-size: 80%;
+  }
+  h1, p, th, a {
+      font-size: 80%;
+  }
+  td {
+      font-size: 70%;
+  }
+  /* Add more CSS rules for other elements as needed */
+</style>
   <h1>Timesheets</h1>
   <a href="{% url 'create-entry' %}">Add New Entry</a>
   <br>
@@ -10,15 +22,20 @@
     {% csrf_token %}
     {{ form }}
 
-    <button type="submit">Apply Filters</button>
+    <button type="submit" style="font-size: 80%">Apply Filters</button>
     <style>
-      input[type="text"], input[type="number"], select {
-        max-width: 200px;
+    
+      input[type="text"],
+      input[type="number"],
+      select{
+          max-width: 200px;
+          font-size: 80%;
       }
       input[type="date"] {
-        max-width: 115px;
+          max-width: 115px;
+          font-size: 80%;
       }
-    </style>
+  </style>
   </form>
   <br>
   <p>Total Hours Worked: {{ total_hours }}</p>

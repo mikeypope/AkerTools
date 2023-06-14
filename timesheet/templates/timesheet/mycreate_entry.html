@@ -2,6 +2,18 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
+<style>
+  body {
+      font-size: 80%;
+  }
+  h1, p, th, a {
+      font-size: 80%;
+  }
+  td {
+      font-size: 70%;
+  }
+  /* Add more CSS rules for other elements as needed */
+</style>
   <h1>Create My Time Entry</h1>
   <form method="post">
     {% csrf_token %}

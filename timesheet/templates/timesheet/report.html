@@ -2,13 +2,38 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
+<style>
+    body {
+        font-size: 80%;
+    }
+    h1, p, th, a {
+        font-size: 80%;
+    }
+    td {
+        font-size: 70%;
+    }
+    /* Add more CSS rules for other elements as needed */
+</style>
 <body>
     <h1>Report</h1>
     <form method="POST" action="{% url 'generate_report' %}">
         {% csrf_token %}
         {{ form }}
         
-        <input type="submit" value="Generate Report">
+        <button type="submit" style="font-size: 80%">Generate Report</button>
+        <style>
+        
+            input[type="text"],
+            input[type="number"],
+            select{
+                max-width: 200px;
+                font-size: 80%;
+            }
+            input[type="date"] {
+                max-width: 115px;
+                font-size: 80%;
+            }
+        </style>
     </form>
     <br>
     {% if bill_amount and breakdown %}
