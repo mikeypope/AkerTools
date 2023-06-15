@@ -36,11 +36,9 @@
             </form>
         </div>
         <div class="table-responsive">
-            <table class="table mt-4">
+            <table class="table mt-8">
                 <thead>
                     <tr>
-                        
-                        
                         <th>Status</th>
                         <th>Description</th>
                         <th>Kind</th>
@@ -53,7 +51,6 @@
                 <tbody>
                     {% for task in tasks %}
                         <tr>
-                            
                             <td>{{ task.task_status }}</td>
                             <td>{{ task.task_description }}</td>
                             <td>{{ task.task_kind }}</td>
