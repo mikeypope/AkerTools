@@ -41,6 +41,7 @@
             <thead>
                 <tr>
                     <th>Status</th>
+                    <th>Created By</th>
                     <th>Kind</th>
                     <th>Client</th>
                     <th>Description</th>
@@ -53,6 +54,7 @@
                 {% for task in tasks %}
                     <tr>
                         <td>{{ task.task_status }}</td>
+                        <td>{{ task.created_by }}</td>
                         <td>{{ task.task_kind }}</td>
                         <td>{{ task.for_client }}</td>
                         <td>{{ task.task_description }}</td>
