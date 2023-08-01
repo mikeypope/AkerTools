@@ -47,7 +47,9 @@
           <th>Client</th>
           <th>Hours Worked</th>
           <th>Job Type</th>
+          <th>Description</th>
           <th>Actions</th>
+        
           <!-- Add other time entry fields as needed -->
         </tr>
       </thead>
@@ -58,6 +60,7 @@
             <td>{{ entry.client }}</td>
             <td>{{ entry.hours_worked }}</td>
             <td>{{ entry.job_type }}</td>
+            <td>{{ entry.description }}</td>
             <td>
               <a href="{% url 'edit-myentry' entry.id %}">Edit</a>
               <a href="{% url 'delete-entry' entry.id %}">Delete</a>

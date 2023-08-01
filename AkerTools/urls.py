@@ -45,4 +45,5 @@ urlpatterns = [
     path('timesheet/delete/<int:entry_id>/', time_views.delete_time, name='delete-entry'),
     path('timesheet/deletefromall/<int:entry_id>/', time_views.delete_time_fromall, name='delete-entry-fromall'),
     path('timesheet/report/', time_views.generate_report, name='generate_report'),
+    path('export_csv/', time_views.export_csv, name='export_csv'),
 ]

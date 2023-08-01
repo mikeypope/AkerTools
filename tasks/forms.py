@@ -110,8 +110,8 @@ class MyTaskCreateForm(forms.ModelForm):
         self.fields['for_client'].queryset = Client.objects.order_by('client_name')
 
 class TaskFilterForm(forms.Form):
-    # start_date = forms.DateField(label='Start Date', widget=forms.DateInput(attrs={'type': 'date'}),required=False)
-    # end_date = forms.DateField(label='End Date', widget=forms.DateInput(attrs={'type': 'date'}),required=False)
+    start_date = forms.DateField(label='Start Date', widget=forms.DateInput(attrs={'type': 'date'}),required=False)
+    end_date = forms.DateField(label='End Date', widget=forms.DateInput(attrs={'type': 'date'}),required=False)
     client = forms.ModelChoiceField(
         queryset=Client.objects.all().order_by('client_name'),
         empty_label='All Clients',
@@ -128,9 +128,10 @@ class TaskFilterForm(forms.Form):
         required=False
     )
         
+    
 class MyTaskFilterForm(forms.Form):
-    # start_date = forms.DateField(label='Start Date', widget=forms.DateInput(attrs={'type': 'date'}),required=False)
-    # end_date = forms.DateField(label='End Date', widget=forms.DateInput(attrs={'type': 'date'}),required=False)
+    start_date = forms.DateField(label='Start Date', widget=forms.DateInput(attrs={'type': 'date'}),required=False)
+    end_date = forms.DateField(label='End Date', widget=forms.DateInput(attrs={'type': 'date'}),required=False)
     client = forms.ModelChoiceField(
         queryset=Client.objects.all().order_by('client_name'),
         empty_label='All Clients',
@@ -141,5 +142,13 @@ class MyTaskFilterForm(forms.Form):
         empty_label='All Job Types',
         required=False
     )
-    
+
+    def __init__(self, *args, **kwargs):
+        super(MyTaskFilterForm, self).__init__(*args, **kwargs)
+        self.set_default_dates()
+        
+    def set_default_dates(self):
+        today = timezone.now().date()
+        self.initial['start_date'] = today.replace(day=1)
+        self.initial['end_date'] = today
 

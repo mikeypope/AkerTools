@@ -12,7 +12,7 @@ from datetime import date, timedelta
 from django.template.defaultfilters import date as datefilter
 from .forms import GenerateReportForm, TimeEntryFilterForm, MyTimeEntryFilterForm
 from django.utils import timezone
-
+import csv
 
 
 register = template.Library()
@@ -33,8 +33,9 @@ def send_task(request, task_id):
         client=task.for_client,
         date=task.due_date,
         hours_worked=0.0,
-        job_type=task.task_kind
-    )
+        job_type=task.task_kind,
+        description=task.task_description
+    )   
     time_entry.save()
 
     # Redirect the user to a success page or desired URL
@@ -218,7 +219,52 @@ def alltimes(request):
         }
         return render(request, 'timesheet/timesheet.html', context)
 
+@login_required
+def export_csv(request):
+    print("Export CSV View Accessed")  # Debug message to check if the view is accessed
 
+    if not (request.user.groups.filter(name='PrincipalDesigner').exists() or request.user.groups.filter(name='AssociateDesigner').exists()):
+        return redirect('mytimes')
+    
+    # Get filter parameters from the request (you can use the same form for consistency)
+    form = TimeEntryFilterForm(request.GET)
+
+    if form.is_valid():
+        employee = form.cleaned_data['employee']
+        start_date = form.cleaned_data['start_date']
+        end_date = form.cleaned_data['end_date']
+        client = form.cleaned_data['client']
+        job_type = form.cleaned_data['job_type']
+            
+        time_entries = TimeEntry.objects.all().order_by('-date')
+        
+        if employee:
+            time_entries = time_entries.filter(employee=employee)
+
+        if start_date and end_date:
+            time_entries = time_entries.filter(date__range=[start_date, end_date])
+
+        if client:
+            time_entries = time_entries.filter(client=client)
+
+        if job_type:
+            time_entries = time_entries.filter(job_type=job_type)
+
+        # Generate CSV file
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="timesheet.csv"'
+        print("CSV Export Response Headers Set")  # Debug message to check if response headers are set correctly
+
+        writer = csv.writer(response)
+        writer.writerow(['Date', 'Employee', 'Client', 'Job Type', 'Description','Hours Worked'])
+
+        for entry in time_entries:
+            writer.writerow([entry.date, entry.employee, entry.client, entry.job_type, entry.description,entry.hours_worked])
+
+        return response
+    else:
+        # Handle invalid form data (if needed)
+        return HttpResponse("Invalid form data for CSV export.")
 
 @login_required
 def create_entry(request):

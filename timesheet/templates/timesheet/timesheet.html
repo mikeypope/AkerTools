@@ -23,6 +23,7 @@
     {{ form }}
 
     <button type="submit" style="font-size: 80%">Apply Filters</button>
+    <button style="font-size: 80%" id="exportCsvBtn">Export to CSV</button>
     <style>
     
       input[type="text"],
@@ -47,6 +48,7 @@
         <th>Client</th>
         <th>Hours Worked</th>
         <th>Job Type</th>
+        <th>Description</th>
         <th>Actions</th>
         <!-- Add other time entry fields as needed -->
       </tr>
@@ -59,6 +61,7 @@
           <td>{{ entry.client }}</td>
           <td>{{ entry.hours_worked }}</td>
           <td>{{ entry.job_type }}</td>
+          <td>{{ entry.description }}</td>
           <td>
             <a href="{% url 'edit-entry' entry.id %}">Edit</a>
             <a href="{% url 'delete-entry-fromall' entry.id %}">Delete</a>
@@ -72,5 +75,33 @@
       {% endfor %}
     </tbody>
   </table>
+
+  <script>
+    // JavaScript function to trigger the file save dialog
+    document.getElementById("exportCsvBtn").addEventListener("click", function() {
+        // Make a GET request to the CSV export URL
+        fetch("{% url 'export_csv' %}", {
+            method: "GET"
+        })
+        .then(response => response.blob())
+        .then(blob => {
+            // Create a URL for the blob
+            const url = URL.createObjectURL(blob);
+
+            // Create an anchor element and trigger the file save dialog
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "timesheet.csv";
+            a.click();
+
+            // Clean up the URL object to free up resources
+            URL.revokeObjectURL(url);
+        })
+        .catch(error => {
+            console.error("Error exporting CSV:", error);
+        });
+    });
+</script>
+
 
 {% endblock %}

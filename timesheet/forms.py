@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 class TimeEntryForm(forms.ModelForm):
     class Meta:
         model = TimeEntry  # Specify the model class
-        fields = [ 'employee','client', 'hours_worked', 'job_type']
+        fields = [ 'employee','client', 'hours_worked', 'job_type', 'description']
 
 class MyTimeEntryForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -19,14 +19,14 @@ class MyTimeEntryForm(forms.ModelForm):
 
     class Meta:
         model = TimeEntry  # Specify the model class
-        fields = [ 'client', 'hours_worked', 'job_type']
+        fields = [ 'client', 'hours_worked', 'job_type', 'description']
 
 
 
 class TimeEntryEditForm(forms.ModelForm):
     class Meta:
         model = TimeEntry
-        fields = ['employee','client', 'date', 'hours_worked', 'job_type']
+        fields = ['employee','client', 'date', 'hours_worked', 'job_type', 'description']
         widgets = {
             'date': forms.DateInput(attrs={'type': 'date'}),
         }
@@ -35,7 +35,7 @@ class TimeEntryEditForm(forms.ModelForm):
 class MyTimeEntryEditForm(forms.ModelForm):
     class Meta:
         model = TimeEntry
-        fields = ['client', 'date', 'hours_worked', 'job_type']
+        fields = ['client', 'date', 'hours_worked', 'job_type', 'description']
         widgets = {
             'date': forms.DateInput(attrs={'type': 'date'}),
         }

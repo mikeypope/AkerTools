@@ -100,6 +100,7 @@ class TimeEntry(models.Model):
     date = models.DateField(default=timezone.now)
     hours_worked = models.DecimalField(max_digits=5, decimal_places=2)
     job_type = models.ForeignKey(JobType, on_delete=models.CASCADE)
+    description = models.TextField(null=True, default=None)
 
 
     def __str__(self):
