@@ -223,7 +223,7 @@ def alltimes(request):
 def export_csv(request):
     print("Export CSV View Accessed")  # Debug message to check if the view is accessed
 
-    if not (request.user.groups.filter(name='PrincipalDesigner').exists() or request.user.groups.filter(name='AssociateDesigner').exists()):
+    if not (request.user.groups.filter(name='PrincipalDesigner').exists() or request.user.groups.filter(name='SeniorDesigner').exists()):
         return redirect('mytimes')
     
     # Get filter parameters from the request (you can use the same form for consistency)
